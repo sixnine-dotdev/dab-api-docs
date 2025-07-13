@@ -1,0 +1,1080 @@
+openapi: 3.0.3
+info:
+  title: DAB Music Player API
+  description: |
+    A comprehensive music streaming and library management API that provides access to music search,
+    album information, user authentication, playlist management, and administrative features.
+
+    ## Authentication
+    Most endpoints require authentication via JWT tokens stored in HTTP-only cookies.
+
+    ## Base URL
+    All API endpoints are relative to: `https://dab.yeet.su/api`
+  version: 1.0.0
+  contact:
+    name: DAB Music Player
+    url: https://dab.yeet.su
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://dab.yeet.su/api
+    description: Production server
+security:
+  - cookieAuth: []
+  - {}
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: User registration
+      description: Register a new user account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                inviteCode:
+                  type: string
+                  description: Required if invite system is enabled
+                  example: INVITE123
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Logout current user and clear session
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Get information about the currently authenticated user
+      responses:
+        '200':
+          description: User information retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    allOf:
+                      - $ref: '#/components/schemas/User'
+                    nullable: true
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: Request password reset
+      description: Send password reset email to user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+      responses:
+        '200':
+          description: Password reset email sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password
+      description: Reset user password using reset token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                  example: reset-token-123
+                password:
+                  type: string
+                  format: password
+                  example: newpassword123
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  # Music Endpoints
+  /search:
+    get:
+      tags:
+        - Music
+      summary: Search for music
+      description: Search for tracks, albums, or artists
+      security: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query
+          schema:
+            type: string
+            example: "The Beatles"
+        - name: type
+          in: query
+          description: Type of content to search for
+          schema:
+            type: string
+            enum: [track, album, artist]
+            default: track
+        - name: limit
+          in: query
+          description: Number of results to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Track'
+                        - $ref: '#/components/schemas/Album'
+                        - $ref: '#/components/schemas/Artist'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /album:
+    get:
+      tags:
+        - Music
+      summary: Get album information
+      description: Retrieve detailed information about an album
+      security: []
+      parameters:
+        - name: albumId
+          in: query
+          required: true
+          description: Album ID
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: Album information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  album:
+                    $ref: '#/components/schemas/Album'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /album/{id}:
+    get:
+      tags:
+        - Music
+      summary: Get album by ID
+      description: Get album details from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Album ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Album found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  album:
+                    $ref: '#/components/schemas/Album'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /discography:
+    get:
+      tags:
+        - Music
+      summary: Get artist discography
+      description: Retrieve all albums by an artist
+      security: []
+      parameters:
+        - name: artistId
+          in: query
+          required: true
+          description: Artist ID
+          schema:
+            type: string
+            example: "67890"
+      responses:
+        '200':
+          description: Artist discography
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  artist:
+                    $ref: '#/components/schemas/Artist'
+                  albums:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Album'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /download:
+    get:
+      tags:
+        - Music
+      summary: Get album download information
+      description: Retrieve album information for download
+      security: []
+      parameters:
+        - name: albumId
+          in: query
+          required: true
+          description: Album ID
+          schema:
+            type: string
+        - name: quality
+          in: query
+          description: Audio quality
+          schema:
+            type: string
+            default: "27"
+            example: "27"
+      responses:
+        '200':
+          description: Album download information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  album:
+                    $ref: '#/components/schemas/Album'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /stream:
+    get:
+      tags:
+        - Music
+      summary: Stream audio track
+      description: Get streaming URL for a track
+      security: []
+      parameters:
+        - name: trackId
+          in: query
+          required: true
+          description: Track ID
+          schema:
+            type: string
+        - name: quality
+          in: query
+          description: Audio quality
+          schema:
+            type: string
+            default: "27"
+      responses:
+        '200':
+          description: Stream URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  streamUrl:
+                    type: string
+                    format: uri
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /lyrics:
+    get:
+      tags:
+        - Music
+      summary: Get song lyrics
+      description: Retrieve lyrics for a song
+      security: []
+      parameters:
+        - name: artist
+          in: query
+          required: true
+          description: Artist name
+          schema:
+            type: string
+            example: "The Beatles"
+        - name: title
+          in: query
+          required: true
+          description: Song title
+          schema:
+            type: string
+            example: "Hey Jude"
+      responses:
+        '200':
+          description: Lyrics found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lyrics:
+                    type: string
+                    example: "Hey Jude, don't make it bad..."
+                  unsynced:
+                    type: boolean
+                    description: Whether lyrics are time-synced
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  # User Features
+  /favorites:
+    get:
+      tags:
+        - User Features
+      summary: Get user favorites
+      description: Retrieve user's favorite tracks
+      responses:
+        '200':
+          description: User favorites
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  favorites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - User Features
+      summary: Add track to favorites
+      description: Add a track to user's favorites
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - track
+              properties:
+                track:
+                  $ref: '#/components/schemas/Track'
+      responses:
+        '201':
+          description: Added to favorites
+        '200':
+          description: Already in favorites
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - User Features
+      summary: Remove track from favorites
+      description: Remove a track from user's favorites
+      parameters:
+        - name: trackId
+          in: query
+          required: true
+          description: Track ID to remove
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Removed from favorites
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /libraries:
+    get:
+      tags:
+        - Libraries
+      summary: Get user libraries
+      description: Retrieve all libraries for the current user
+      responses:
+        '200':
+          description: User libraries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  libraries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Library'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Libraries
+      summary: Create library
+      description: Create a new library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "My Playlist"
+                description:
+                  type: string
+                  example: "My favorite songs"
+                isPublic:
+                  type: boolean
+                  default: false
+      responses:
+        '201':
+          description: Library created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  library:
+                    $ref: '#/components/schemas/Library'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /libraries/{id}:
+    get:
+      tags:
+        - Libraries
+      summary: Get library
+      description: Get a specific library with its tracks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Library ID
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of tracks per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Library found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  library:
+                    allOf:
+                      - $ref: '#/components/schemas/Library'
+                      - type: object
+                        properties:
+                          tracks:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Track'
+                          pagination:
+                            $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Libraries
+      summary: Delete library
+      description: Delete a library
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Library ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Library deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - Libraries
+      summary: Update library
+      description: Update library information
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Library ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                isPublic:
+                  type: boolean
+      responses:
+        '200':
+          description: Library updated
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /libraries/{id}/tracks:
+    post:
+      tags:
+        - Libraries
+      summary: Add track to library
+      description: Add a track to a library
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Library ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - track
+              properties:
+                track:
+                  $ref: '#/components/schemas/Track'
+      responses:
+        '201':
+          description: Track added to library
+        '200':
+          description: Track already exists in library
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /libraries/{id}/tracks/{trackId}:
+    delete:
+      tags:
+        - Libraries
+      summary: Remove track from library
+      description: Remove a track from a library
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Library ID
+          schema:
+            type: string
+        - name: trackId
+          in: path
+          required: true
+          description: Track ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Track removed from library
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /queue:
+    get:
+      tags:
+        - Queue
+      summary: Get user queue
+      description: Retrieve user's playback queue
+      responses:
+        '200':
+          description: User queue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  queue:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Queue
+      summary: Save user queue
+      description: Save user's playback queue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queue
+              properties:
+                queue:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Track'
+      responses:
+        '200':
+          description: Queue saved
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Queue
+      summary: Clear user queue
+      description: Clear user's playback queue
+      responses:
+        '200':
+          description: Queue cleared
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      description: JWT token stored in HTTP-only cookie
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        created_at:
+          type: string
+          format: date-time
+    Track:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345"
+        title:
+          type: string
+          example: "Hey Jude"
+        artist:
+          type: string
+          example: "The Beatles"
+        artistId:
+          type: string
+          example: "67890"
+        albumTitle:
+          type: string
+          example: "The Beatles 1967-1970"
+        albumCover:
+          type: string
+          format: uri
+          example: "https://example.com/cover.jpg"
+        albumId:
+          type: string
+          example: "54321"
+        releaseDate:
+          type: string
+          example: "1968-08-26"
+        genre:
+          type: string
+          example: "Rock"
+        duration:
+          type: integer
+          description: Duration in seconds
+          example: 431
+        audioQuality:
+          $ref: '#/components/schemas/AudioQuality'
+    Album:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "54321"
+        title:
+          type: string
+          example: "Abbey Road"
+        artist:
+          type: string
+          example: "The Beatles"
+        releaseDate:
+          type: string
+          example: "1969-09-26"
+        genre:
+          type: string
+          example: "Rock"
+        cover:
+          type: string
+          format: uri
+          example: "https://example.com/cover.jpg"
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+        trackCount:
+          type: integer
+          example: 17
+        duration:
+          type: integer
+          description: Total duration in seconds
+          example: 2873
+        audioQuality:
+          $ref: '#/components/schemas/AudioQuality'
+        label:
+          type: string
+          example: "Apple Records"
+        upc:
+          type: string
+          example: "094638241621"
+        url:
+          type: string
+          format: uri
+        streamable:
+          type: boolean
+        downloadable:
+          type: boolean
+        mediaCount:
+          type: integer
+          example: 1
+        maximumChannelCount:
+          type: integer
+          example: 2
+        parental_warning:
+          type: boolean
+        popularity:
+          type: integer
+          example: 85
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "67890"
+        name:
+          type: string
+          example: "The Beatles"
+        albumsCount:
+          type: integer
+          example: 13
+        albumsAsPrimaryArtistCount:
+          type: integer
+          example: 13
+        albumsAsPrimaryComposerCount:
+          type: integer
+          example: 0
+        slug:
+          type: string
+          example: "the-beatles"
+        image:
+          type: string
+          format: uri
+          example: "https://example.com/artist.jpg"
+        biography:
+          type: string
+        similarArtistIds:
+          type: array
+          items:
+            type: string
+        information:
+          type: string
+    Library:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "lib-123"
+        name:
+          type: string
+          example: "My Favorites"
+        description:
+          type: string
+          example: "My favorite songs collection"
+        isPublic:
+          type: boolean
+          example: false
+        trackCount:
+          type: integer
+          example: 25
+        createdAt:
+          type: string
+          format: date-time
+    AudioQuality:
+      type: object
+      properties:
+        maximumBitDepth:
+          type: integer
+          example: 16
+        maximumSamplingRate:
+          type: number
+          example: 44.1
+        isHiRes:
+          type: boolean
+          example: false
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 100
+        hasMore:
+          type: boolean
+          example: true
+        loaded:
+          type: integer
+          example: 20
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"
+        message:
+          type: string
+          example: "Detailed error message"
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Music
+    description: Music search, streaming, and metadata
+  - name: User Features
+    description: User-specific features like favorites and preferences
+  - name: Libraries
+    description: User library and playlist management
+  - name: Queue
+    description: Playback queue management
