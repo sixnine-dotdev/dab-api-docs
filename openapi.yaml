@@ -21,7 +21,7 @@ info:
 
     ## Base URL
     All API endpoints are relative to: `https://dab.yeet.su/api`
-  version: 1.0.0
+  version: 1.0.1
   contact:
     name: DAB Music Player
     url: https://dab.yeet.su
@@ -48,32 +48,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: user@example.com
-                password:
-                  type: string
-                  format: password
-                  example: password123
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
           description: Login successful
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Login successful
-                  user:
-                    $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/LoginResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -92,38 +74,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - username
-                - email
-                - password
-              properties:
-                username:
-                  type: string
-                  example: johndoe
-                email:
-                  type: string
-                  format: email
-                  example: john@example.com
-                password:
-                  type: string
-                  format: password
-                  example: password123
-                inviteCode:
-                  type: string
-                  description: Required if invite system is enabled
-                  example: INVITE123
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
         '201':
           description: User created successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: User created successfully
+                $ref: '#/components/schemas/RegisterResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -140,11 +98,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Logged out successfully
+                $ref: '#/components/schemas/LogoutResponse'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /auth/me:
@@ -159,12 +113,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    allOf:
-                      - $ref: '#/components/schemas/User'
-                    nullable: true
+                $ref: '#/components/schemas/CurrentUserResponse'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /auth/forgot-password:
@@ -179,17 +128,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: user@example.com
+              $ref: '#/components/schemas/ForgotPasswordRequest'
       responses:
         '200':
           description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -206,21 +152,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - token
-                - password
-              properties:
-                token:
-                  type: string
-                  example: reset-token-123
-                password:
-                  type: string
-                  format: password
-                  example: newpassword123
+              $ref: '#/components/schemas/ResetPasswordRequest'
       responses:
         '200':
           description: Password reset successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -262,15 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  results:
-                    type: array
-                    items:
-                      oneOf:
-                        - $ref: '#/components/schemas/Track'
-                        - $ref: '#/components/schemas/Album'
-                        - $ref: '#/components/schemas/Artist'
+                $ref: '#/components/schemas/SearchResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -296,10 +227,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  album:
-                    $ref: '#/components/schemas/Album'
+                $ref: '#/components/schemas/AlbumResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -323,10 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  album:
-                    $ref: '#/components/schemas/Album'
+                $ref: '#/components/schemas/AlbumResponse'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -352,14 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  artist:
-                    $ref: '#/components/schemas/Artist'
-                  albums:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Album'
+                $ref: '#/components/schemas/DiscographyResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -391,10 +309,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  album:
-                    $ref: '#/components/schemas/Album'
+                $ref: '#/components/schemas/AlbumResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -425,11 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  streamUrl:
-                    type: string
-                    format: uri
+                $ref: '#/components/schemas/StreamResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -462,14 +373,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  lyrics:
-                    type: string
-                    example: "Hey Jude, don't make it bad..."
-                  unsynced:
-                    type: boolean
-                    description: Whether lyrics are time-synced
+                $ref: '#/components/schemas/LyricsResponse'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -487,12 +391,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  favorites:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Track'
+                $ref: '#/components/schemas/FavoritesResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
@@ -507,17 +406,20 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - track
-              properties:
-                track:
-                  $ref: '#/components/schemas/Track'
+              $ref: '#/components/schemas/AddToFavoritesRequest'
       responses:
         '201':
           description: Added to favorites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '200':
           description: Already in favorites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -539,6 +441,10 @@ paths:
       responses:
         '200':
           description: Removed from favorites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -557,12 +463,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  libraries:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Library'
+                $ref: '#/components/schemas/LibrariesResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
@@ -577,31 +478,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: "My Playlist"
-                description:
-                  type: string
-                  example: "My favorite songs"
-                isPublic:
-                  type: boolean
-                  default: false
+              $ref: '#/components/schemas/CreateLibraryRequest'
       responses:
         '201':
           description: Library created
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  library:
-                    $ref: '#/components/schemas/Library'
+                $ref: '#/components/schemas/CreateLibraryResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -642,19 +526,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  library:
-                    allOf:
-                      - $ref: '#/components/schemas/Library'
-                      - type: object
-                        properties:
-                          tracks:
-                            type: array
-                            items:
-                              $ref: '#/components/schemas/Track'
-                          pagination:
-                            $ref: '#/components/schemas/Pagination'
+                $ref: '#/components/schemas/LibraryDetailsResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -676,6 +548,10 @@ paths:
       responses:
         '200':
           description: Library deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -699,17 +575,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                isPublic:
-                  type: boolean
+              $ref: '#/components/schemas/UpdateLibraryRequest'
       responses:
         '200':
           description: Library updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -734,17 +607,20 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - track
-              properties:
-                track:
-                  $ref: '#/components/schemas/Track'
+              $ref: '#/components/schemas/AddTrackToLibraryRequest'
       responses:
         '201':
           description: Track added to library
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '200':
           description: Track already exists in library
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -775,6 +651,10 @@ paths:
       responses:
         '200':
           description: Track removed from library
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -793,12 +673,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  queue:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Track'
+                $ref: '#/components/schemas/QueueResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
@@ -813,17 +688,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - queue
-              properties:
-                queue:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Track'
+              $ref: '#/components/schemas/SaveQueueRequest'
       responses:
         '200':
           description: Queue saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
@@ -836,6 +708,10 @@ paths:
       responses:
         '200':
           description: Queue cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
@@ -848,6 +724,7 @@ components:
       name: session
       description: JWT token stored in HTTP-only cookie
   schemas:
+    # Base Models
     User:
       type: object
       properties:
@@ -1053,6 +930,283 @@ components:
         message:
           type: string
           example: "Detailed error message"
+    
+    # Search Result with discriminator
+    SearchResultItem:
+      discriminator:
+        propertyName: type
+        mapping:
+          track: '#/components/schemas/Track'
+          album: '#/components/schemas/Album'
+          artist: '#/components/schemas/Artist'
+      oneOf:
+        - allOf:
+          - $ref: '#/components/schemas/Track'
+          - type: object
+            properties:
+              type:
+                type: string
+                enum: [track]
+        - allOf:
+          - $ref: '#/components/schemas/Album'
+          - type: object
+            properties:
+              type:
+                type: string
+                enum: [album]
+        - allOf:
+          - $ref: '#/components/schemas/Artist'
+          - type: object
+            properties:
+              type:
+                type: string
+                enum: [artist]
+    
+    # Generic Message Response
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operation successful"
+    
+    # Auth Request/Response Models
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          example: password123
+    
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login successful
+        user:
+          $ref: '#/components/schemas/User'
+    
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        password:
+          type: string
+          format: password
+          example: password123
+        inviteCode:
+          type: string
+          description: Required if invite system is enabled
+          example: INVITE123
+    
+    RegisterResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User created successfully
+    
+    LogoutResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Logged out successfully
+    
+    CurrentUserResponse:
+      type: object
+      properties:
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+          nullable: true
+    
+    ForgotPasswordRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+    
+    ResetPasswordRequest:
+      type: object
+      required:
+        - token
+        - password
+      properties:
+        token:
+          type: string
+          example: reset-token-123
+        password:
+          type: string
+          format: password
+          example: newpassword123
+    
+    # Music Response Models
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResultItem'
+    
+    AlbumResponse:
+      type: object
+      properties:
+        album:
+          $ref: '#/components/schemas/Album'
+    
+    DiscographyResponse:
+      type: object
+      properties:
+        artist:
+          $ref: '#/components/schemas/Artist'
+        albums:
+          type: array
+          items:
+            $ref: '#/components/schemas/Album'
+    
+    StreamResponse:
+      type: object
+      properties:
+        streamUrl:
+          type: string
+          format: uri
+    
+    LyricsResponse:
+      type: object
+      properties:
+        lyrics:
+          type: string
+          example: "Hey Jude, don't make it bad..."
+        unsynced:
+          type: boolean
+          description: Whether lyrics are time-synced
+    
+    # User Features Models
+    FavoritesResponse:
+      type: object
+      properties:
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    
+    AddToFavoritesRequest:
+      type: object
+      required:
+        - track
+      properties:
+        track:
+          $ref: '#/components/schemas/Track'
+    
+    # Libraries Models
+    LibrariesResponse:
+      type: object
+      properties:
+        libraries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Library'
+    
+    CreateLibraryRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "My Playlist"
+        description:
+          type: string
+          example: "My favorite songs"
+        isPublic:
+          type: boolean
+          default: false
+    
+    CreateLibraryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        library:
+          $ref: '#/components/schemas/Library'
+    
+    LibraryDetailsResponse:
+      type: object
+      properties:
+        library:
+          allOf:
+            - $ref: '#/components/schemas/Library'
+            - type: object
+              properties:
+                tracks:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Track'
+                pagination:
+                  $ref: '#/components/schemas/Pagination'
+    
+    UpdateLibraryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        isPublic:
+          type: boolean
+    
+    AddTrackToLibraryRequest:
+      type: object
+      required:
+        - track
+      properties:
+        track:
+          $ref: '#/components/schemas/Track'
+    
+    # Queue Models
+    QueueResponse:
+      type: object
+      properties:
+        queue:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    
+    SaveQueueRequest:
+      type: object
+      required:
+        - queue
+      properties:
+        queue:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    
   responses:
     BadRequest:
       description: Bad request
