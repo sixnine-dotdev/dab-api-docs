@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.3
 info:
   title: DAB Music Player API
   description: |
@@ -48,20 +48,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /auth/register:
     post:
       tags:
@@ -74,18 +74,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequest'
+              $ref: "#/components/schemas/RegisterRequest"
       responses:
-        '201':
+        "201":
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/RegisterResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /auth/logout:
     post:
       tags:
@@ -93,14 +93,14 @@ paths:
       summary: User logout
       description: Logout current user and clear session
       responses:
-        '200':
+        "200":
           description: Logged out successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LogoutResponse'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LogoutResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /auth/me:
     get:
       tags:
@@ -108,14 +108,14 @@ paths:
       summary: Get current user
       description: Get information about the currently authenticated user
       responses:
-        '200':
+        "200":
           description: User information retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CurrentUserResponse'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/CurrentUserResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /auth/forgot-password:
     post:
       tags:
@@ -128,18 +128,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ForgotPasswordRequest'
+              $ref: "#/components/schemas/ForgotPasswordRequest"
       responses:
-        '200':
+        "200":
           description: Password reset email sent
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /auth/reset-password:
     post:
       tags:
@@ -152,25 +152,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ResetPasswordRequest'
+              $ref: "#/components/schemas/ResetPasswordRequest"
       responses:
-        '200':
+        "200":
           description: Password reset successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   # Music Endpoints
   /search:
     get:
       tags:
         - Music
       summary: Search for music
-      description: Search for tracks, albums, or artists
+      description: Search for tracks, albums, or artists. Returns separate arrays for each content type. Depending on the 'type' parameter, some arrays may be empty.
       security: []
       parameters:
         - name: q
@@ -196,16 +196,16 @@ paths:
             maximum: 50
             default: 20
       responses:
-        '200':
+        "200":
           description: Search results
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /album:
     get:
       tags:
@@ -222,16 +222,16 @@ paths:
             type: string
             example: "12345"
       responses:
-        '200':
+        "200":
           description: Album information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AlbumResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AlbumResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /album/{id}:
     get:
       tags:
@@ -246,16 +246,16 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Album found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AlbumResponse'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AlbumResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /discography:
     get:
       tags:
@@ -272,16 +272,16 @@ paths:
             type: string
             example: "67890"
       responses:
-        '200':
+        "200":
           description: Artist discography
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DiscographyResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/DiscographyResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /download:
     get:
       tags:
@@ -304,16 +304,16 @@ paths:
             default: "27"
             example: "27"
       responses:
-        '200':
+        "200":
           description: Album download information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AlbumResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AlbumResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /stream:
     get:
       tags:
@@ -335,16 +335,16 @@ paths:
             type: string
             default: "27"
       responses:
-        '200':
+        "200":
           description: Stream URL
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/StreamResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /lyrics:
     get:
       tags:
@@ -368,16 +368,16 @@ paths:
             type: string
             example: "Hey Jude"
       responses:
-        '200':
+        "200":
           description: Lyrics found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LyricsResponse'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LyricsResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   # User Features
   /favorites:
     get:
@@ -386,16 +386,16 @@ paths:
       summary: Get user favorites
       description: Retrieve user's favorite tracks
       responses:
-        '200':
+        "200":
           description: User favorites
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FavoritesResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/FavoritesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     post:
       tags:
         - User Features
@@ -406,26 +406,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddToFavoritesRequest'
+              $ref: "#/components/schemas/AddToFavoritesRequest"
       responses:
-        '201':
+        "201":
           description: Added to favorites
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '200':
+                $ref: "#/components/schemas/MessageResponse"
+        "200":
           description: Already in favorites
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
         - User Features
@@ -439,18 +439,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Removed from favorites
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /libraries:
     get:
       tags:
@@ -458,16 +458,16 @@ paths:
       summary: Get user libraries
       description: Retrieve all libraries for the current user
       responses:
-        '200':
+        "200":
           description: User libraries
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LibrariesResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LibrariesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     post:
       tags:
         - Libraries
@@ -478,20 +478,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateLibraryRequest'
+              $ref: "#/components/schemas/CreateLibraryRequest"
       responses:
-        '201':
+        "201":
           description: Library created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateLibraryResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/CreateLibraryResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /libraries/{id}:
     get:
       tags:
@@ -521,18 +521,18 @@ paths:
             maximum: 100
             default: 20
       responses:
-        '200':
+        "200":
           description: Library found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LibraryDetailsResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LibraryDetailsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
         - Libraries
@@ -546,18 +546,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Library deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     patch:
       tags:
         - Libraries
@@ -575,20 +575,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateLibraryRequest'
+              $ref: "#/components/schemas/UpdateLibraryRequest"
       responses:
-        '200':
+        "200":
           description: Library updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /libraries/{id}/tracks:
     post:
       tags:
@@ -607,28 +607,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddTrackToLibraryRequest'
+              $ref: "#/components/schemas/AddTrackToLibraryRequest"
       responses:
-        '201':
+        "201":
           description: Track added to library
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '200':
+                $ref: "#/components/schemas/MessageResponse"
+        "200":
           description: Track already exists in library
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /libraries/{id}/tracks/{trackId}:
     delete:
       tags:
@@ -649,18 +649,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Track removed from library
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /queue:
     get:
       tags:
@@ -668,16 +668,16 @@ paths:
       summary: Get user queue
       description: Retrieve user's playback queue
       responses:
-        '200':
+        "200":
           description: User queue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QueueResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/QueueResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     post:
       tags:
         - Queue
@@ -688,34 +688,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaveQueueRequest'
+              $ref: "#/components/schemas/SaveQueueRequest"
       responses:
-        '200':
+        "200":
           description: Queue saved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
         - Queue
       summary: Clear user queue
       description: Clear user's playback queue
       responses:
-        '200':
+        "200":
           description: Queue cleared
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 components:
   securitySchemes:
     cookieAuth:
@@ -777,7 +777,7 @@ components:
           description: Duration in seconds
           example: 431
         audioQuality:
-          $ref: '#/components/schemas/AudioQuality'
+          $ref: "#/components/schemas/AudioQuality"
     Album:
       type: object
       properties:
@@ -803,7 +803,7 @@ components:
         tracks:
           type: array
           items:
-            $ref: '#/components/schemas/Track'
+            $ref: "#/components/schemas/Track"
         trackCount:
           type: integer
           example: 17
@@ -812,7 +812,7 @@ components:
           description: Total duration in seconds
           example: 2873
         audioQuality:
-          $ref: '#/components/schemas/AudioQuality'
+          $ref: "#/components/schemas/AudioQuality"
         label:
           type: string
           example: "Apple Records"
@@ -930,38 +930,38 @@ components:
         message:
           type: string
           example: "Detailed error message"
-    
+
     # Search Result with discriminator
     SearchResultItem:
       discriminator:
         propertyName: type
         mapping:
-          track: '#/components/schemas/Track'
-          album: '#/components/schemas/Album'
-          artist: '#/components/schemas/Artist'
+          track: "#/components/schemas/Track"
+          album: "#/components/schemas/Album"
+          artist: "#/components/schemas/Artist"
       oneOf:
         - allOf:
-          - $ref: '#/components/schemas/Track'
-          - type: object
-            properties:
-              type:
-                type: string
-                enum: [track]
+            - $ref: "#/components/schemas/Track"
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum: [track]
         - allOf:
-          - $ref: '#/components/schemas/Album'
-          - type: object
-            properties:
-              type:
-                type: string
-                enum: [album]
+            - $ref: "#/components/schemas/Album"
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum: [album]
         - allOf:
-          - $ref: '#/components/schemas/Artist'
-          - type: object
-            properties:
-              type:
-                type: string
-                enum: [artist]
-    
+            - $ref: "#/components/schemas/Artist"
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum: [artist]
+
     # Generic Message Response
     MessageResponse:
       type: object
@@ -969,7 +969,7 @@ components:
         message:
           type: string
           example: "Operation successful"
-    
+
     # Auth Request/Response Models
     LoginRequest:
       type: object
@@ -985,7 +985,7 @@ components:
           type: string
           format: password
           example: password123
-    
+
     LoginResponse:
       type: object
       properties:
@@ -993,8 +993,8 @@ components:
           type: string
           example: Login successful
         user:
-          $ref: '#/components/schemas/User'
-    
+          $ref: "#/components/schemas/User"
+
     RegisterRequest:
       type: object
       required:
@@ -1017,29 +1017,29 @@ components:
           type: string
           description: Required if invite system is enabled
           example: INVITE123
-    
+
     RegisterResponse:
       type: object
       properties:
         message:
           type: string
           example: User created successfully
-    
+
     LogoutResponse:
       type: object
       properties:
         message:
           type: string
           example: Logged out successfully
-    
+
     CurrentUserResponse:
       type: object
       properties:
         user:
           allOf:
-            - $ref: '#/components/schemas/User'
+            - $ref: "#/components/schemas/User"
           nullable: true
-    
+
     ForgotPasswordRequest:
       type: object
       required:
@@ -1049,7 +1049,7 @@ components:
           type: string
           format: email
           example: user@example.com
-    
+
     ResetPasswordRequest:
       type: object
       required:
@@ -1063,39 +1063,63 @@ components:
           type: string
           format: password
           example: newpassword123
-    
+
     # Music Response Models
     SearchResponse:
       type: object
       properties:
-        results:
+        albums:
           type: array
           items:
-            $ref: '#/components/schemas/SearchResultItem'
-    
+            $ref: "#/components/schemas/Album"
+          description: Array of albums found
+          nullable: true
+        tracks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Track"
+          description: Array of tracks found
+          nullable: true
+        artists:
+          type: array
+          items:
+            $ref: "#/components/schemas/Artist"
+          description: Array of artists found
+          nullable: true
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        query:
+          type: string
+          description: Original search query
+          example: "The Beatles"
+        searchType:
+          type: string
+          enum: [track, album, artist, all]
+          description: Type of search performed
+
     AlbumResponse:
       type: object
       properties:
         album:
-          $ref: '#/components/schemas/Album'
-    
+          $ref: "#/components/schemas/Album"
+
     DiscographyResponse:
       type: object
       properties:
         artist:
-          $ref: '#/components/schemas/Artist'
+          $ref: "#/components/schemas/Artist"
         albums:
           type: array
           items:
-            $ref: '#/components/schemas/Album'
-    
+            $ref: "#/components/schemas/Album"
+
     StreamResponse:
       type: object
       properties:
         streamUrl:
           type: string
           format: uri
-    
+
     LyricsResponse:
       type: object
       properties:
@@ -1105,7 +1129,7 @@ components:
         unsynced:
           type: boolean
           description: Whether lyrics are time-synced
-    
+
     # User Features Models
     FavoritesResponse:
       type: object
@@ -1113,16 +1137,16 @@ components:
         favorites:
           type: array
           items:
-            $ref: '#/components/schemas/Track'
-    
+            $ref: "#/components/schemas/Track"
+
     AddToFavoritesRequest:
       type: object
       required:
         - track
       properties:
         track:
-          $ref: '#/components/schemas/Track'
-    
+          $ref: "#/components/schemas/Track"
+
     # Libraries Models
     LibrariesResponse:
       type: object
@@ -1130,8 +1154,8 @@ components:
         libraries:
           type: array
           items:
-            $ref: '#/components/schemas/Library'
-    
+            $ref: "#/components/schemas/Library"
+
     CreateLibraryRequest:
       type: object
       required:
@@ -1146,30 +1170,30 @@ components:
         isPublic:
           type: boolean
           default: false
-    
+
     CreateLibraryResponse:
       type: object
       properties:
         message:
           type: string
         library:
-          $ref: '#/components/schemas/Library'
-    
+          $ref: "#/components/schemas/Library"
+
     LibraryDetailsResponse:
       type: object
       properties:
         library:
           allOf:
-            - $ref: '#/components/schemas/Library'
+            - $ref: "#/components/schemas/Library"
             - type: object
               properties:
                 tracks:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Track'
+                    $ref: "#/components/schemas/Track"
                 pagination:
-                  $ref: '#/components/schemas/Pagination'
-    
+                  $ref: "#/components/schemas/Pagination"
+
     UpdateLibraryRequest:
       type: object
       properties:
@@ -1179,15 +1203,15 @@ components:
           type: string
         isPublic:
           type: boolean
-    
+
     AddTrackToLibraryRequest:
       type: object
       required:
         - track
       properties:
         track:
-          $ref: '#/components/schemas/Track'
-    
+          $ref: "#/components/schemas/Track"
+
     # Queue Models
     QueueResponse:
       type: object
@@ -1195,8 +1219,8 @@ components:
         queue:
           type: array
           items:
-            $ref: '#/components/schemas/Track'
-    
+            $ref: "#/components/schemas/Track"
+
     SaveQueueRequest:
       type: object
       required:
@@ -1205,33 +1229,33 @@ components:
         queue:
           type: array
           items:
-            $ref: '#/components/schemas/Track'
-    
+            $ref: "#/components/schemas/Track"
+
   responses:
     BadRequest:
       description: Bad request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ResponseError'
+            $ref: "#/components/schemas/ResponseError"
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ResponseError'
+            $ref: "#/components/schemas/ResponseError"
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ResponseError'
+            $ref: "#/components/schemas/ResponseError"
     InternalServerError:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ResponseError'
+            $ref: "#/components/schemas/ResponseError"
 tags:
   - name: Authentication
     description: User authentication and session management
@@ -1243,4 +1267,3 @@ tags:
     description: User library and playlist management
   - name: Queue
     description: Playback queue management
-
