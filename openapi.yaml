@@ -921,7 +921,7 @@ components:
         loaded:
           type: integer
           example: 20
-    Error:
+    ResponseError:
       type: object
       properties:
         error:
@@ -1213,25 +1213,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ResponseError'
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ResponseError'
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ResponseError'
     InternalServerError:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ResponseError'
 tags:
   - name: Authentication
     description: User authentication and session management
@@ -1243,3 +1243,4 @@ tags:
     description: User library and playlist management
   - name: Queue
     description: Playback queue management
+
