@@ -745,7 +745,9 @@ components:
       type: object
       properties:
         id:
-          type: string
+          oneOf:
+            - type: string
+            - type: integer
           example: "12345"
         title:
           type: string
@@ -754,8 +756,8 @@ components:
           type: string
           example: "The Beatles"
         artistId:
-          type: string
-          example: "67890"
+          type: integer
+          example: 67890
         albumTitle:
           type: string
           example: "The Beatles 1967-1970"
