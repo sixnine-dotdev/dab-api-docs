@@ -20,7 +20,7 @@ info:
     Most endpoints require authentication via JWT tokens stored in HTTP-only cookies.
 
     ## Base URL
-    All API endpoints are relative to: `https://dab.yeet.su/api`
+    All API endpoints are relative to: `https://dabmusic.xyz/api`
   version: 1.0.1
   contact:
     name: DAB Music Player
@@ -1269,5 +1269,6 @@ tags:
     description: User library and playlist management
   - name: Queue
     description: Playback queue management
+
 
 
