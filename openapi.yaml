@@ -29,7 +29,7 @@ info:
     name: GNU Affero General Public License v3.0
     url: https://www.gnu.org/licenses/agpl-3.0.en.html
 servers:
-  - url: https://dab.yeet.su/api
+  - url: https://dabmusic.xyz/api
     description: Production server
 security:
   - cookieAuth: []
@@ -1269,4 +1269,5 @@ tags:
     description: User library and playlist management
   - name: Queue
     description: Playback queue management
+
 
